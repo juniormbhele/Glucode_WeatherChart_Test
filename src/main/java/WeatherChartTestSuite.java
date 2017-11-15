@@ -1,4 +1,3 @@
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -18,14 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Sphiwe.Mbhele on 2017/11/06.
- */
-
 public class WeatherChartTestSuite
 {
     WebDriver driver;
-    AppiumDriver appDriver;
+
     AndroidDriver andrDriver;
     private String firstCity = "Durban";
     private String secondCity = "Johannesburg";
@@ -140,9 +135,6 @@ public class WeatherChartTestSuite
         }
 
         driver.navigate().back();
-       // driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
-
-
     }
 
     @Test (description = "View First city's details", priority = 5)
@@ -250,8 +242,6 @@ public class WeatherChartTestSuite
         {
             Reporter.log("Couldn't find a a second Add City button");
         }
-        driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
-
         driver.navigate().back();
     }
 
@@ -287,7 +277,6 @@ public class WeatherChartTestSuite
             System.out.println("It's getting here");
             Thread.sleep(500);
         }
-
         driver.navigate().back();
 
     }
@@ -369,8 +358,6 @@ public class WeatherChartTestSuite
         {
             Reporter.log("Couldn't find a a second Add City button");
         }
-
-        driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
         driver.navigate().back();
     }
 
@@ -481,10 +468,7 @@ public class WeatherChartTestSuite
         {
             Reporter.log("Couldn't find a a second Add City button");
         }
-
-        driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
         driver.navigate().back();
-
     }
 
     @Test (description = "View forth city's details", priority = 8)
@@ -509,6 +493,51 @@ public class WeatherChartTestSuite
 
             Reporter.log("" + cityName + "City was available in the main screen");
             Thread.sleep(500);
+        } else {
+            Reporter.log("Couldn't find a Add City Button");
+
+            this.AddForthCity();
+
+            driver.findElement(By.xpath("//android.widget.TextView[@text='" + cityName + "']")).click();
+
+            Thread.sleep(500);
+        }
+        driver.navigate().back();
+    }
+
+    @Test (description = "Delete a city's details", priority = 9)
+    public void DeleteCityWeather() throws InterruptedException
+    {
+
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        Date dateobj = new Date();
+
+        String DateTime = ((df.format(dateobj)));
+        String cityName = _forthCity;
+
+        Reporter.log("View City Test STARTED AT: " + DateTime);
+
+        Boolean isCityPresent = driver.findElements(By.xpath("//android.widget.TextView[@text='"+cityName+"']"))
+                .size() > 0;
+
+        if (isCityPresent) {
+
+            WebElement city = driver.findElement(By.xpath("//android.widget.TextView[@text='" + cityName + "']"));
+
+            int wide  = city.getSize().width;
+            int hgt = city.getSize().height;
+
+            int startx = (int) (wide * (0.8));
+            int endx = (int)(wide *(0.2));
+            int starty =  hgt /2 ;
+            int endy = hgt/2;
+
+            //To move from Fav to all contacts, we need to swipe from right to left
+            andrDriver.swipe(startx, starty, endx, endy, 1000);
+
+            Reporter.log("" + cityName + "City was available in the main screen");
+            Thread.sleep(500);
         } else
         {
             Reporter.log("Couldn't find a Add City Button");
@@ -520,11 +549,7 @@ public class WeatherChartTestSuite
             Thread.sleep(500);
         }
 
-
-        driver.navigate().back();
-
     }
-
 
     @AfterTest
     public void End() {
